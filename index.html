@@ -56,6 +56,8 @@
     border-bottom: 1px solid #000;
     min-height: 18px;
     padding: 2px 5px;
+    font-weight: bold;
+    color: #00008B;
   }
 
   /* ===== SECTION TITLES ===== */
@@ -76,6 +78,11 @@
     border: 2px solid #000;
     padding: 6px 8px;
     font-size: 13px;
+  }
+
+  td {
+    font-weight: bold;
+    color: #00008B;
   }
 
   th {
@@ -106,11 +113,19 @@
     margin-bottom: 8px;
   }
 
+  .checklist span#office_address,
+  .checklist span#company_email,
+  .checklist span#company_phone_number,
+  .checklist span#national_id_or_passport {
+    font-weight: bold;
+    color: #00008B;
+  }
+
   /* ===== EMPLOYEE SECTION ===== */
   .employee-row {
     display: grid;
-    grid-template-columns: 380px 10px 1fr;
-    margin-bottom: 8px;
+    grid-template-columns: 250px 10px 1fr;
+    margin-bottom: 10px;
   }
 
   .inline-line {
@@ -120,6 +135,8 @@
     min-height: 16px;
     vertical-align: middle;
     padding: 0 5px;
+    font-weight: bold;
+    color: #00008B;
   }
 
   /* ===== FOOTER ===== */
@@ -327,47 +344,111 @@ function populateForm() {
   });
   
   // Populate shareholders table
+  const shareholdersTbody = document.getElementById('shareholders_tbody');
+  shareholdersTbody.innerHTML = '';
+  
   if (data.shareholders) {
     try {
-      const shareholders = JSON.parse(data.shareholders);
-      const shareholdersTbody = document.getElementById('shareholders_tbody');
-      shareholdersTbody.innerHTML = '';
+      // Try to parse as JSON
+      let shareholders;
       
-      shareholders.forEach((shareholder, index) => {
-        const row = document.createElement('tr');
-        row.innerHTML = `
-          <td class="col-no">${index + 1}</td>
-          <td>${shareholder.name || ''}</td>
-          <td class="col-share">${shareholder.share || ''}</td>
-          <td class="col-position">${shareholder.position || ''}</td>
-        `;
-        shareholdersTbody.appendChild(row);
-      });
+      // Check if it's already a string that looks like JSON
+      if (typeof data.shareholders === 'string') {
+        // Remove any extra encoding or formatting
+        let cleanData = data.shareholders.trim();
+        
+        // Try direct parse
+        try {
+          shareholders = JSON.parse(cleanData);
+        } catch (e1) {
+          // Try double-decode in case it's double-encoded
+          try {
+            shareholders = JSON.parse(decodeURIComponent(cleanData));
+          } catch (e2) {
+            console.error('Error parsing shareholders:', e2);
+            console.log('Raw shareholders data:', data.shareholders);
+          }
+        }
+      }
+      
+      if (Array.isArray(shareholders) && shareholders.length > 0) {
+        shareholders.forEach((shareholder, index) => {
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td class="col-no">${index + 1}</td>
+            <td>${shareholder.name || shareholder.contact_name || ''}</td>
+            <td class="col-share">${shareholder.share || ''}</td>
+            <td class="col-position">${shareholder.position || ''}</td>
+          `;
+          shareholdersTbody.appendChild(row);
+        });
+      } else {
+        // Add empty row if no data
+        shareholdersTbody.innerHTML = '<tr><td class="col-no">1</td><td></td><td class="col-share"></td><td class="col-position"></td></tr>';
+      }
     } catch (e) {
-      console.error('Error parsing shareholders:', e);
+      console.error('Error processing shareholders:', e);
+      console.log('Shareholders data:', data.shareholders);
+      // Add empty row on error
+      shareholdersTbody.innerHTML = '<tr><td class="col-no">1</td><td></td><td class="col-share"></td><td class="col-position"></td></tr>';
     }
+  } else {
+    // Add empty row if no parameter
+    shareholdersTbody.innerHTML = '<tr><td class="col-no">1</td><td></td><td class="col-share"></td><td class="col-position"></td></tr>';
   }
   
   // Populate members table
+  const membersTbody = document.getElementById('members_tbody');
+  membersTbody.innerHTML = '';
+  
   if (data.members) {
     try {
-      const members = JSON.parse(data.members);
-      const membersTbody = document.getElementById('members_tbody');
-      membersTbody.innerHTML = '';
+      // Try to parse as JSON
+      let members;
       
-      members.forEach((member, index) => {
-        const row = document.createElement('tr');
-        row.innerHTML = `
-          <td class="col-no">${index + 1}</td>
-          <td>${member.name || ''}</td>
-          <td>${member.address || ''}</td>
-          <td>${member.email || ''}</td>
-        `;
-        membersTbody.appendChild(row);
-      });
+      // Check if it's already a string that looks like JSON
+      if (typeof data.members === 'string') {
+        // Remove any extra encoding or formatting
+        let cleanData = data.members.trim();
+        
+        // Try direct parse
+        try {
+          members = JSON.parse(cleanData);
+        } catch (e1) {
+          // Try double-decode in case it's double-encoded
+          try {
+            members = JSON.parse(decodeURIComponent(cleanData));
+          } catch (e2) {
+            console.error('Error parsing members:', e2);
+            console.log('Raw members data:', data.members);
+          }
+        }
+      }
+      
+      if (Array.isArray(members) && members.length > 0) {
+        members.forEach((member, index) => {
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td class="col-no">${index + 1}</td>
+            <td>${member.name || member.contact_name || ''}</td>
+            <td>${member.address || ''}</td>
+            <td>${member.email || ''}</td>
+          `;
+          membersTbody.appendChild(row);
+        });
+      } else {
+        // Add empty row if no data
+        membersTbody.innerHTML = '<tr><td class="col-no">1</td><td></td><td></td><td></td></tr>';
+      }
     } catch (e) {
-      console.error('Error parsing members:', e);
+      console.error('Error processing members:', e);
+      console.log('Members data:', data.members);
+      // Add empty row on error
+      membersTbody.innerHTML = '<tr><td class="col-no">1</td><td></td><td></td><td></td></tr>';
     }
+  } else {
+    // Add empty row if no parameter
+    membersTbody.innerHTML = '<tr><td class="col-no">1</td><td></td><td></td><td></td></tr>';
   }
 }
 
