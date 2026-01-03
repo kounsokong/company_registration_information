@@ -124,8 +124,8 @@
   /* ===== EMPLOYEE SECTION ===== */
   .employee-row {
     display: grid;
-    grid-template-columns: 250px 10px 1fr;
-    margin-bottom: 10px;
+    grid-template-columns: 380px 10px 1fr;
+    margin-bottom: 8px;
   }
 
   .inline-line {
@@ -327,6 +327,11 @@ function getUrlParams() {
 function populateForm() {
   const data = getUrlParams();
   
+  // Debug: Log all URL parameters
+  console.log('=== ALL URL PARAMETERS ===');
+  console.log(data);
+  console.log('==========================');
+  
   // Populate simple fields
   const simpleFields = [
     'company_name', 'company_type', 'business_objective', 'capital',
@@ -347,31 +352,38 @@ function populateForm() {
   const shareholdersTbody = document.getElementById('shareholders_tbody');
   shareholdersTbody.innerHTML = '';
   
+  console.log('=== SHAREHOLDERS DEBUG ===');
+  console.log('Raw shareholders parameter:', data.shareholders);
+  console.log('Type:', typeof data.shareholders);
+  
   if (data.shareholders) {
     try {
-      // Try to parse as JSON
       let shareholders;
       
-      // Check if it's already a string that looks like JSON
       if (typeof data.shareholders === 'string') {
-        // Remove any extra encoding or formatting
         let cleanData = data.shareholders.trim();
+        console.log('Cleaned data:', cleanData);
         
         // Try direct parse
         try {
           shareholders = JSON.parse(cleanData);
+          console.log('✓ Parsed successfully (direct):', shareholders);
         } catch (e1) {
+          console.log('✗ Direct parse failed:', e1.message);
           // Try double-decode in case it's double-encoded
           try {
-            shareholders = JSON.parse(decodeURIComponent(cleanData));
+            const decoded = decodeURIComponent(cleanData);
+            console.log('Decoded data:', decoded);
+            shareholders = JSON.parse(decoded);
+            console.log('✓ Parsed successfully (after decode):', shareholders);
           } catch (e2) {
-            console.error('Error parsing shareholders:', e2);
-            console.log('Raw shareholders data:', data.shareholders);
+            console.error('✗ Double-decode parse failed:', e2.message);
           }
         }
       }
       
       if (Array.isArray(shareholders) && shareholders.length > 0) {
+        console.log(`✓ Creating ${shareholders.length} shareholder rows`);
         shareholders.forEach((shareholder, index) => {
           const row = document.createElement('tr');
           row.innerHTML = `
@@ -383,49 +395,55 @@ function populateForm() {
           shareholdersTbody.appendChild(row);
         });
       } else {
-        // Add empty row if no data
+        console.log('✗ No valid shareholders array, adding empty row');
         shareholdersTbody.innerHTML = '<tr><td class="col-no">1</td><td></td><td class="col-share"></td><td class="col-position"></td></tr>';
       }
     } catch (e) {
-      console.error('Error processing shareholders:', e);
-      console.log('Shareholders data:', data.shareholders);
-      // Add empty row on error
+      console.error('✗ Error processing shareholders:', e);
       shareholdersTbody.innerHTML = '<tr><td class="col-no">1</td><td></td><td class="col-share"></td><td class="col-position"></td></tr>';
     }
   } else {
-    // Add empty row if no parameter
+    console.log('✗ No shareholders parameter found');
     shareholdersTbody.innerHTML = '<tr><td class="col-no">1</td><td></td><td class="col-share"></td><td class="col-position"></td></tr>';
   }
+  console.log('==========================');
   
   // Populate members table
   const membersTbody = document.getElementById('members_tbody');
   membersTbody.innerHTML = '';
   
+  console.log('=== MEMBERS DEBUG ===');
+  console.log('Raw members parameter:', data.members);
+  console.log('Type:', typeof data.members);
+  
   if (data.members) {
     try {
-      // Try to parse as JSON
       let members;
       
-      // Check if it's already a string that looks like JSON
       if (typeof data.members === 'string') {
-        // Remove any extra encoding or formatting
         let cleanData = data.members.trim();
+        console.log('Cleaned data:', cleanData);
         
         // Try direct parse
         try {
           members = JSON.parse(cleanData);
+          console.log('✓ Parsed successfully (direct):', members);
         } catch (e1) {
+          console.log('✗ Direct parse failed:', e1.message);
           // Try double-decode in case it's double-encoded
           try {
-            members = JSON.parse(decodeURIComponent(cleanData));
+            const decoded = decodeURIComponent(cleanData);
+            console.log('Decoded data:', decoded);
+            members = JSON.parse(decoded);
+            console.log('✓ Parsed successfully (after decode):', members);
           } catch (e2) {
-            console.error('Error parsing members:', e2);
-            console.log('Raw members data:', data.members);
+            console.error('✗ Double-decode parse failed:', e2.message);
           }
         }
       }
       
       if (Array.isArray(members) && members.length > 0) {
+        console.log(`✓ Creating ${members.length} member rows`);
         members.forEach((member, index) => {
           const row = document.createElement('tr');
           row.innerHTML = `
@@ -437,19 +455,18 @@ function populateForm() {
           membersTbody.appendChild(row);
         });
       } else {
-        // Add empty row if no data
+        console.log('✗ No valid members array, adding empty row');
         membersTbody.innerHTML = '<tr><td class="col-no">1</td><td></td><td></td><td></td></tr>';
       }
     } catch (e) {
-      console.error('Error processing members:', e);
-      console.log('Members data:', data.members);
-      // Add empty row on error
+      console.error('✗ Error processing members:', e);
       membersTbody.innerHTML = '<tr><td class="col-no">1</td><td></td><td></td><td></td></tr>';
     }
   } else {
-    // Add empty row if no parameter
+    console.log('✗ No members parameter found');
     membersTbody.innerHTML = '<tr><td class="col-no">1</td><td></td><td></td><td></td></tr>';
   }
+  console.log('====================');
 }
 
 // Run on page load
