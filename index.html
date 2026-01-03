@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Company Registration Information</title>
+
+<style>
+  @page {
+    size: A4;
+    margin: 20mm;
+  }
+
+  body {
+    font-family: "Times New Roman", serif;
+    font-size: 14px;
+    color: #000;
+    margin: 0;
+    padding: 0;
+    background: #f0f0f0;
+  }
+
+  .page {
+    width: 210mm;
+    min-height: 297mm;
+    margin: 20px auto;
+    background: #fff;
+    padding: 20mm;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  }
+
+  /* ===== HEADER ===== */
+  .title {
+    text-align: center;
+    font-size: 20px;
+    font-weight: bold;
+    text-decoration: underline;
+    margin-bottom: 20px;
+  }
+
+  /* ===== FORM ROWS ===== */
+  .row {
+    display: grid;
+    grid-template-columns: 24px 260px 10px 1fr;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+
+  .box {
+    width: 16px;
+    height: 16px;
+    border: 2px solid #000;
+  }
+
+  .line {
+    border-bottom: 1px solid #000;
+    min-height: 18px;
+    padding: 2px 5px;
+  }
+
+  /* ===== SECTION TITLES ===== */
+  .section-title {
+    margin: 18px 0 6px;
+    font-weight: bold;
+  }
+
+  /* ===== TABLES ===== */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 18px;
+    table-layout: fixed;
+  }
+
+  th, td {
+    border: 2px solid #000;
+    padding: 6px 8px;
+    font-size: 13px;
+  }
+
+  th {
+    text-align: center;
+    font-weight: bold;
+  }
+
+  .col-no {
+    width: 50px;
+    text-align: center;
+  }
+
+  .col-share {
+    width: 120px;
+    text-align: center;
+  }
+
+  .col-position {
+    width: 140px;
+    text-align: center;
+  }
+
+  /* ===== CHECKLIST ===== */
+  .checklist div {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+  }
+
+  /* ===== EMPLOYEE SECTION ===== */
+  .employee-row {
+    display: grid;
+    grid-template-columns: 380px 10px 1fr;
+    margin-bottom: 8px;
+  }
+
+  .inline-line {
+    display: inline-block;
+    width: 110px;
+    border-bottom: 1px solid #000;
+    min-height: 16px;
+    vertical-align: middle;
+    padding: 0 5px;
+  }
+
+  /* ===== FOOTER ===== */
+  .footer {
+    margin-top: 24px;
+    font-size: 13px;
+  }
+
+  /* ===== PRINT STYLES ===== */
+  @media print {
+    body {
+      background: #fff;
+    }
+    .page {
+      margin: 0;
+      box-shadow: none;
+      padding: 0;
+    }
+    .no-print {
+      display: none;
+    }
+  }
+
+  /* ===== PRINT BUTTON ===== */
+  .print-button {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 10px 20px;
+    background: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    z-index: 1000;
+  }
+
+  .print-button:hover {
+    background: #45a049;
+  }
+</style>
+
+</head>
+<body>
+
+<button class="print-button no-print" onclick="window.print()">🖨️ Print</button>
+
+<div class="page">
+
+  <div class="title">COMPANY REGISTRATION INFORMATION</div>
+
+  <!-- BASIC INFO -->
+  <div class="row">
+    <div class="box"></div>
+    <div>Company Name</div>
+    <div>:</div>
+    <div class="line" id="company_name"></div>
+  </div>
+
+  <div class="row">
+    <div class="box"></div>
+    <div>Type of company (Sole or Private)</div>
+    <div>:</div>
+    <div class="line" id="company_type"></div>
+  </div>
+
+  <div class="row">
+    <div class="box"></div>
+    <div>Business Objective</div>
+    <div>:</div>
+    <div class="line" id="business_objective"></div>
+  </div>
+
+  <div class="row">
+    <div class="box"></div>
+    <div>Capital (No Deposit Required)</div>
+    <div>:</div>
+    <div class="line" id="capital"></div>
+  </div>
+
+  <!-- SHAREHOLDERS -->
+  <div class="section-title">
+    Names of shareholders (identifying the president of the company) and shares of all members
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th class="col-no">No</th>
+        <th>Name</th>
+        <th class="col-share">Share %</th>
+        <th class="col-position">Position</th>
+      </tr>
+    </thead>
+    <tbody id="shareholders_tbody">
+      <!-- Populated by JavaScript -->
+    </tbody>
+  </table>
+
+  <!-- MEMBERS -->
+  <div class="section-title">
+    Member Address, Phone Number, Email All Members
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th class="col-no">No</th>
+        <th>Name</th>
+        <th>Address</th>
+        <th>Email</th>
+      </tr>
+    </thead>
+    <tbody id="members_tbody">
+      <!-- Populated by JavaScript -->
+    </tbody>
+  </table>
+
+  <!-- CHECKLIST -->
+  <div class="checklist">
+    <div><span class="box"></span> <span>Office Address (Detailed location including village): <span id="office_address"></span></span></div>
+    <div><span class="box"></span> <span>Company E-mail: <span id="company_email"></span></span></div>
+    <div><span class="box"></span> <span>Company phone number: <span id="company_phone_number"></span></span></div>
+    <div><span class="box"></span> <span>ID or Passport: <span id="national_id_or_passport"></span></span></div>
+    <div><span class="box"></span> <span>Photo of shareholders (White background, without glasses)</span></div>
+    <div><span class="box"></span> <span>Number of Employee</span></div>
+  </div>
+
+  <!-- EMPLOYEES -->
+  <div class="employee-row">
+    <div>a. Number of employee</div>
+    <div>:</div>
+    <div>
+      <span class="inline-line" id="number_of_employee"></span>
+      &nbsp;&nbsp; Local employee:
+      <span class="inline-line" id="local_employee"></span>
+    </div>
+  </div>
+
+  <div class="employee-row">
+    <div>b. Number of men employee</div>
+    <div>:</div>
+    <div>
+      <span class="inline-line" id="number_of_men_employee"></span>
+      &nbsp;&nbsp; Foreign employees:
+      <span class="inline-line" id="foreign_employee"></span>
+    </div>
+  </div>
+
+  <div class="employee-row">
+    <div>c. Number of women employee</div>
+    <div>:</div>
+    <div>
+      <span class="inline-line" id="number_of_women_employee"></span>
+      &nbsp;&nbsp; Monthly salary:
+      <span class="inline-line" id="monthly_salary"></span>
+    </div>
+  </div>
+
+  <div class="employee-row">
+    <div>d. How many working days in a week?</div>
+    <div>:</div>
+    <div><span class="inline-line" id="working_days"></span></div>
+  </div>
+
+  <div class="footer">
+    • For more information, contact 096 5588888
+  </div>
+
+</div>
+
+<script>
+// Function to get URL parameters
+function getUrlParams() {
+  const params = new URLSearchParams(window.location.search);
+  const data = {};
+  
+  for (const [key, value] of params.entries()) {
+    data[key] = decodeURIComponent(value);
+  }
+  
+  return data;
+}
+
+// Function to populate the form
+function populateForm() {
+  const data = getUrlParams();
+  
+  // Populate simple fields
+  const simpleFields = [
+    'company_name', 'company_type', 'business_objective', 'capital',
+    'office_address', 'company_email', 'company_phone_number', 
+    'national_id_or_passport', 'number_of_employee', 'local_employee',
+    'number_of_men_employee', 'foreign_employee', 'number_of_women_employee',
+    'monthly_salary', 'working_days'
+  ];
+  
+  simpleFields.forEach(field => {
+    const element = document.getElementById(field);
+    if (element && data[field]) {
+      element.textContent = data[field];
+    }
+  });
+  
+  // Populate shareholders table
+  if (data.shareholders) {
+    try {
+      const shareholders = JSON.parse(data.shareholders);
+      const shareholdersTbody = document.getElementById('shareholders_tbody');
+      shareholdersTbody.innerHTML = '';
+      
+      shareholders.forEach((shareholder, index) => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td class="col-no">${index + 1}</td>
+          <td>${shareholder.name || ''}</td>
+          <td class="col-share">${shareholder.share || ''}</td>
+          <td class="col-position">${shareholder.position || ''}</td>
+        `;
+        shareholdersTbody.appendChild(row);
+      });
+    } catch (e) {
+      console.error('Error parsing shareholders:', e);
+    }
+  }
+  
+  // Populate members table
+  if (data.members) {
+    try {
+      const members = JSON.parse(data.members);
+      const membersTbody = document.getElementById('members_tbody');
+      membersTbody.innerHTML = '';
+      
+      members.forEach((member, index) => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td class="col-no">${index + 1}</td>
+          <td>${member.name || ''}</td>
+          <td>${member.address || ''}</td>
+          <td>${member.email || ''}</td>
+        `;
+        membersTbody.appendChild(row);
+      });
+    } catch (e) {
+      console.error('Error parsing members:', e);
+    }
+  }
+}
+
+// Run on page load
+window.addEventListener('DOMContentLoaded', populateForm);
+</script>
+
+</body>
+</html>
